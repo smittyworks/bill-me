@@ -4,20 +4,30 @@ A mobile app for tracking bills by taking photos, extracting due dates and amoun
 
 **Status**: ✅ All features complete and working! See `CURRENT_STATUS.md` for details.
 
-## Quick Resume (Start Development)
+## Quick Start
+
+### Clone the Repository
+```bash
+git clone git@github.com:smittyworks/bill-me.git
+cd bill-me
+```
+
+### Start Development
 
 ```bash
 # Terminal 1 - Backend
 cd backend
+npm install
 npm run dev
 
 # Terminal 2 - Mobile
 cd mobile
+npm install
 npx expo start
 # Scan QR code with Expo Go app on iPhone
 ```
 
-Backend runs at: `http://192.168.68.139:3000`
+See detailed setup instructions below if this is your first time.
 
 ## Project Structure
 

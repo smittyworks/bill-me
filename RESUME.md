@@ -2,7 +2,18 @@
 
 If you're picking this up in a new session, here's everything you need to know.
 
-## Project Location
+## GitHub Repository
+```
+https://github.com/smittyworks/bill-me
+```
+
+Clone the project:
+```bash
+git clone git@github.com:smittyworks/bill-me.git
+cd bill-me
+```
+
+## Project Location (Current Development)
 ```
 /Users/geoffsmith/development/mobile/bill-me/bill-me/
 ```

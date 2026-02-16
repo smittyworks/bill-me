@@ -1,6 +1,7 @@
 # Current Status - Bill Me App
 
-**Last Updated**: February 14, 2026
+**Last Updated**: February 15, 2026
+**GitHub**: https://github.com/smittyworks/bill-me
 
 ## ✅ All Features Complete & Working
 
@@ -121,9 +122,12 @@
 ### For Production Deployment
 
 1. **Deploy Backend to Vercel**:
-   - Vercel Cron will run automatically at 9am UTC daily
-   - Update `EXPO_PUBLIC_API_URL` to Vercel URL
+   - Connect GitHub repo at https://vercel.com
+   - Import `smittyworks/bill-me` project
+   - Set root directory to `backend/`
    - Add all environment variables in Vercel dashboard
+   - Vercel Cron will run automatically at 9am UTC daily
+   - Update `EXPO_PUBLIC_API_URL` in mobile/.env to Vercel URL
 
 2. **Build Standalone Mobile App** (optional):
    ```bash
