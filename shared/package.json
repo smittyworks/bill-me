@@ -1,0 +1,8 @@
+{
+  "name": "@bill-me/shared",
+  "version": "1.0.0",
+  "description": "Shared types for Bill Me app",
+  "main": "types.ts",
+  "types": "types.ts",
+  "private": true
+}

@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "Bill Me",
+    "slug": "bill-me",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourname.billme",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to capture photos of bills.",
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to select bill images."
+      }
+    },
+    "android": {
+      "package": "com.yourname.billme",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.POST_NOTIFICATIONS"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "60ab5dcb-2ab8-4c4e-9268-49c57d3921ed"
+      }
+    },
+    "owner": "smittyworks"
+  }
+}
