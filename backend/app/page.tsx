@@ -1,9 +1,11 @@
-export default function Home() {
-  return (
-    <main>
-      <h1>Bill Me API</h1>
-      <p>Backend API for Bill Me mobile app</p>
-      <p>Status: Running</p>
-    </main>
-  );
+import { redirect } from 'next/navigation';
+import { auth } from '@clerk/nextjs/server';
+
+export default async function Home() {
+  const { userId } = await auth();
+  if (userId) {
+    redirect('/dashboard');
+  } else {
+    redirect('/sign-in');
+  }
 }

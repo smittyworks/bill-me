@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { sql } from '@/lib/db';
 import { errorResponse, successResponse } from '@/lib/utils';
-import { Bill, UpdateBillRequest } from '../../../../shared/types';
+import { Bill, UpdateBillRequest } from '@shared/types';
 
 type RouteContext = {
   params: Promise<{ id: string }>;

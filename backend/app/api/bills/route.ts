@@ -3,7 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import { sql } from '@/lib/db';
 import { errorResponse, successResponse } from '@/lib/utils';
 import { extractBillData } from '@/lib/claude';
-import { Bill, ListBillsResponse, CreateBillResponse } from '../../../shared/types';
+import { Bill, ListBillsResponse, CreateBillResponse } from '@shared/types';
 
 // GET /api/bills - List all bills for authenticated user
 export async function GET(request: NextRequest) {
