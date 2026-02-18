@@ -34,10 +34,10 @@ export default function NewBillPage() {
 
   const [step, setStep] = useState<Step>('upload');
   const [preview, setPreview] = useState<string | null>(null);
-  const [imageData, setImageData] = useState<string | null>(null);
   const [extracted, setExtracted] = useState<ExtractedData | null>(null);
   const [extracting, setExtracting] = useState(false);
   const [saving, setSaving] = useState(false);
+
 
   // Editable fields
   const [description, setDescription] = useState('');
@@ -73,7 +73,6 @@ export default function NewBillPage() {
       const ext: ExtractedData = data.extracted;
 
       setExtracted(ext);
-      setImageData(data.image_data);
       setDescription(ext.description || '');
       setBalance(String(ext.balance));
       setMinimumDue(String(ext.minimum_due));
@@ -104,7 +103,6 @@ export default function NewBillPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          image_url: imageData || '',
           balance: parseFloat(balance),
           minimum_due: parseFloat(minimumDue || balance),
           due_date: dueDate,

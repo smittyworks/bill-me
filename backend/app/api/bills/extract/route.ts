@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
     const extracted = await extractBillData(dataUrl);
 
-    return successResponse({ extracted, image_data: dataUrl });
+    return successResponse({ extracted });
   } catch (error: any) {
     console.error('Error extracting bill data:', error);
     return errorResponse(error.message || 'Failed to extract bill data', 500, error);

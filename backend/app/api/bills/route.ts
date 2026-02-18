@@ -57,34 +57,39 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
 
-    if (!body.image_url) {
-      return errorResponse('image_url is required', 400);
+    // If values are already provided (web flow), use them directly.
+    // Otherwise fall back to Claude extraction from image_url (mobile flow).
+    let balance = body.balance;
+    let minimumDue = body.minimum_due;
+    let dueDate = body.due_date;
+    let description = body.description;
+
+    if (balance == null || dueDate == null) {
+      if (!body.image_url) {
+        return errorResponse('image_url is required when bill fields are not provided', 400);
+      }
+      console.log('Extracting bill data from image...');
+      const extracted = await extractBillData(body.image_url);
+      balance = body.balance ?? extracted.balance;
+      minimumDue = body.minimum_due ?? extracted.minimum_due;
+      dueDate = body.due_date ?? extracted.due_date;
+      description = body.description ?? extracted.description;
     }
 
-    // Extract bill data using Claude API
-    console.log('Extracting bill data from image...');
-    const extracted = await extractBillData(body.image_url);
-
-    // Allow manual overrides
-    const balance = body.balance ?? extracted.balance;
-    const minimumDue = body.minimum_due ?? extracted.minimum_due;
-    const dueDate = body.due_date ?? extracted.due_date;
-    const description = body.description ?? extracted.description;
-
-    // Save to database
+    // Save to database (image_url is nullable — not stored for web-created bills)
     const result = await sql`
       INSERT INTO bills (user_id, balance, minimum_due, due_date, description, image_url, status)
-      VALUES (${userId}, ${balance}, ${minimumDue}, ${dueDate}, ${description}, ${body.image_url}, 'unpaid')
+      VALUES (${userId}, ${balance}, ${minimumDue}, ${dueDate}, ${description}, ${body.image_url ?? null}, 'unpaid')
       RETURNING *
     `;
 
     const response: CreateBillResponse = {
       bill: result[0] as Bill,
       extracted_data: {
-        balance: extracted.balance,
-        minimum_due: extracted.minimum_due,
-        due_date: extracted.due_date,
-        confidence: extracted.confidence,
+        balance,
+        minimum_due: minimumDue,
+        due_date: dueDate,
+        confidence: 'high',
       },
     };
 
