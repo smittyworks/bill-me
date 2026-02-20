@@ -48,11 +48,7 @@ export default async function DashboardPage({
           <h1 className="text-2xl font-bold">Bills</h1>
           {unpaidTotal > 0 && (
             <p className="text-sm text-muted-foreground mt-0.5">
-              ${unpaidTotal.toFixed(2)} minimum due across{" "}
-              {bills.filter((b) => b.status === "unpaid").length} unpaid bill
-              {bills.filter((b) => b.status === "unpaid").length !== 1
-                ? "s"
-                : ""}
+              ${unpaidTotal.toFixed(2)} total minimum due
             </p>
           )}
         </div>
