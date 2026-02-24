@@ -31,65 +31,59 @@ export function BillCard({ bill }: { bill: Bill }) {
   return (
     <Link href={`/bills/${bill.id}`}>
       <Card
-        className={`my-4 hover:shadow-md transition-shadow cursor-pointer ${isOverdue ? "border-destructive/50" : isUrgent ? "border-yellow-400/60" : ""}`}
+        className={`my-2 py-3 gap-1 hover:shadow-md transition-shadow cursor-pointer ${isOverdue ? "border-destructive/50" : isUrgent ? "border-yellow-400/60" : ""}`}
       >
         <CardTitle className="mx-4 p-0 truncate">
           {bill.description || "Bill"}
         </CardTitle>
-        <CardContent className="flex items-center gap-4 py-0">
-          {/* Status icon */}
-          <div className="shrink-0">
-            {isPaid ? (
-              <CheckCircle className="w-5 h-5 text-green-500" />
-            ) : isOverdue ? (
-              <AlertTriangle className="w-5 h-5 text-destructive" />
-            ) : (
-              <Clock
-                className={`w-5 h-5 ${isUrgent ? "text-yellow-500" : "text-muted-foreground"}`}
-              />
-            )}
-          </div>
+        <CardContent className="py-2 space-y-1">
+          {/* Full-width date */}
+          <p className="text-sm text-muted-foreground">
+            Due {formatDate(bill.due_date)}
+          </p>
 
-          {/* Description + due date */}
-          <div className="flex-1 min-w-0">
-            {/* <p className="font-medium truncate">{bill.description || "Bill"}</p> */}
-            <p className="text-sm text-muted-foreground">
-              Due {formatDate(bill.due_date)}
-              {!isPaid && (
-                <span
-                  className={`ml-2 ${isOverdue ? "text-destructive" : isUrgent ? "text-yellow-600 dark:text-yellow-400" : ""}`}
-                >
-                  <br />
-                  {/* <div> */}
-                  {isOverdue
-                    ? `${Math.abs(days)} day${Math.abs(days) !== 1 ? "s" : ""} overdue`
-                    : days === 0
-                      ? "due today"
-                      : `${days} day${days !== 1 ? "s" : ""} left`}
-                  {/* </div> */}
-                </span>
+          {/* Bottom row: icon + amount + days left + badge */}
+          <div className="flex items-center gap-3">
+            <div className="shrink-0">
+              {isPaid ? (
+                <CheckCircle className="w-5 h-5 text-green-500" />
+              ) : isOverdue ? (
+                <AlertTriangle className="w-5 h-5 text-destructive" />
+              ) : (
+                <Clock
+                  className={`w-5 h-5 ${isUrgent ? "text-yellow-500" : "text-muted-foreground"}`}
+                />
               )}
-            </p>
-          </div>
+            </div>
 
-          {/* Amounts */}
-          <div className="text-right shrink-0">
-            {/* <p className="font-semibold">${Number(bill.balance).toFixed(2)}</p> */}
             {bill.minimum_due && Number(bill.minimum_due) > 0 && (
-              <p className="text-muted-foreground">
+              <p className="font-semibold">
                 ${Number(bill.minimum_due).toFixed(2)}
               </p>
             )}
-          </div>
 
-          {/* Status badge */}
-          <Badge
-            variant={
-              isPaid ? "secondary" : isOverdue ? "destructive" : "outline"
-            }
-          >
-            {isPaid ? "Paid" : isOverdue ? "Overdue" : "Unpaid"}
-          </Badge>
+            {!isPaid && (
+              <p
+                className={`text-sm ${isOverdue ? "text-destructive" : isUrgent ? "text-yellow-600 dark:text-yellow-400" : "text-muted-foreground"}`}
+              >
+                {isOverdue
+                  ? `${Math.abs(days)} day${Math.abs(days) !== 1 ? "s" : ""} overdue`
+                  : days === 0
+                    ? "due today"
+                    : `${days} day${days !== 1 ? "s" : ""} left`}
+              </p>
+            )}
+
+            <div className="flex-1" />
+
+            <Badge
+              variant={
+                isPaid ? "secondary" : isOverdue ? "destructive" : "outline"
+              }
+            >
+              {isPaid ? "Paid" : isOverdue ? "Overdue" : "Unpaid"}
+            </Badge>
+          </div>
         </CardContent>
       </Card>
     </Link>
