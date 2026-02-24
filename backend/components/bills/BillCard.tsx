@@ -37,12 +37,16 @@ export function BillCard({ bill }: { bill: Bill }) {
           {bill.description || "Bill"}
         </CardTitle>
         <CardContent className="py-2 space-y-1">
-          {/* Full-width date */}
-          <p className="text-sm text-muted-foreground">
-            Due {formatDate(bill.due_date)}
+          {/* Full-width date + days left */}
+          <p className={`text-sm ${isOverdue && !isPaid ? "text-destructive" : isUrgent ? "text-yellow-600 dark:text-yellow-400" : "text-muted-foreground"}`}>
+            {isPaid
+              ? `Due ${formatDate(bill.due_date)}`
+              : days === 0
+                ? "Due today"
+                : `Due ${formatDate(bill.due_date)} (${isOverdue ? `${Math.abs(days)} day${Math.abs(days) !== 1 ? "s" : ""} overdue` : `${days} day${days !== 1 ? "s" : ""}`})`}
           </p>
 
-          {/* Bottom row: icon + amount + days left + badge */}
+          {/* Bottom row: icon + amount + badge */}
           <div className="flex items-center gap-3">
             <div className="shrink-0">
               {isPaid ? (
@@ -57,20 +61,8 @@ export function BillCard({ bill }: { bill: Bill }) {
             </div>
 
             {bill.minimum_due && Number(bill.minimum_due) > 0 && (
-              <p className="font-semibold">
+              <p className="font-semibold text-xl">
                 ${Number(bill.minimum_due).toFixed(2)}
-              </p>
-            )}
-
-            {!isPaid && (
-              <p
-                className={`text-sm ${isOverdue ? "text-destructive" : isUrgent ? "text-yellow-600 dark:text-yellow-400" : "text-muted-foreground"}`}
-              >
-                {isOverdue
-                  ? `${Math.abs(days)} day${Math.abs(days) !== 1 ? "s" : ""} overdue`
-                  : days === 0
-                    ? "due today"
-                    : `${days} day${days !== 1 ? "s" : ""} left`}
               </p>
             )}
 
