@@ -18,7 +18,7 @@ export default async function DashboardPage({
   const { userId } = await auth();
   const { status } = await searchParams;
   const filter = (
-    status === "paid" || status === "unpaid" ? status : "all"
+    status === "paid" || status === "all" ? status : "unpaid"
   ) as FilterStatus;
 
   let bills: Bill[];
@@ -69,7 +69,7 @@ export default async function DashboardPage({
             size="sm"
             asChild
           >
-            <Link href={f === "all" ? "/dashboard" : `/dashboard?status=${f}`}>
+            <Link href={f === "unpaid" ? "/dashboard" : `/dashboard?status=${f}`}>
               {f.charAt(0).toUpperCase() + f.slice(1)}
             </Link>
           </Button>
