@@ -21,7 +21,7 @@ export async function extractBillData(imageBase64: string): Promise<BillExtracti
   const base64Data = imageBase64.replace(/^data:image\/[a-z]+;base64,/, '');
 
   const message = await anthropic.messages.create({
-    model: 'claude-3-haiku-20240307',
+    model: 'claude-haiku-4-5-20251001',
     max_tokens: 1024,
     messages: [
       {
