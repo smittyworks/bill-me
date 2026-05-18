@@ -22,9 +22,15 @@ export default async function DashboardPage({
   ) as FilterStatus;
 
   let bills: Bill[];
-  if (filter === "paid" || filter === "unpaid") {
+  if (filter === "paid") {
     const result = await sql`
-      SELECT * FROM bills WHERE user_id = ${userId} AND status = ${filter}
+      SELECT * FROM bills WHERE user_id = ${userId} AND status = 'paid'
+      ORDER BY due_date DESC LIMIT 10
+    `;
+    bills = result as Bill[];
+  } else if (filter === "unpaid") {
+    const result = await sql`
+      SELECT * FROM bills WHERE user_id = ${userId} AND status = 'unpaid'
       ORDER BY due_date ASC
     `;
     bills = result as Bill[];

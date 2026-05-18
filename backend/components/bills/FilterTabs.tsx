@@ -30,6 +30,7 @@ export function FilterTabs({ currentFilter }: { currentFilter: FilterStatus }) {
           size="sm"
           disabled={isPending}
           onClick={() => handleClick(f)}
+          className="cursor-pointer"
         >
           {isPending && loadingFilter === f && (
             <Loader2 className="w-3 h-3 animate-spin" />
