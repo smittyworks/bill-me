@@ -3,8 +3,8 @@ import { sql } from "@/lib/db";
 import { Bill } from "@shared/types";
 import { BillCard } from "@/components/bills/BillCard";
 import { EmptyState } from "@/components/bills/EmptyState";
+import { FilterTabs } from "@/components/bills/FilterTabs";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 
@@ -61,20 +61,7 @@ export default async function DashboardPage({
       </div>
 
       {/* Filter tabs */}
-      <div className="flex gap-2">
-        {(["all", "unpaid", "paid"] as const).map((f) => (
-          <Button
-            key={f}
-            variant={filter === f ? "default" : "outline"}
-            size="sm"
-            asChild
-          >
-            <Link href={f === "unpaid" ? "/dashboard" : `/dashboard?status=${f}`}>
-              {f.charAt(0).toUpperCase() + f.slice(1)}
-            </Link>
-          </Button>
-        ))}
-      </div>
+      <FilterTabs currentFilter={filter} />
 
       {/* Bill list */}
       {bills.length === 0 ? (
