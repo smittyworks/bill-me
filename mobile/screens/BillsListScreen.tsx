@@ -21,6 +21,7 @@ export default function BillsListScreen({ navigation }: any) {
   const [bills, setBills] = useState<Bill[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [filter, setFilter] = useState<'all' | 'unpaid' | 'paid'>('unpaid');
 
   const loadBills = async () => {
     try {
@@ -104,6 +105,12 @@ export default function BillsListScreen({ navigation }: any) {
     return `Due in ${diffDays} days`;
   };
 
+  const filteredBills = bills.filter((bill) => {
+    if (filter === 'unpaid') return bill.status !== 'paid';
+    if (filter === 'paid') return bill.status === 'paid';
+    return true;
+  });
+
   const renderBillItem = ({ item }: { item: Bill }) => {
     const daysUntil = getDaysUntilDue(item.due_date);
     const isOverdue = daysUntil.includes('overdue');
@@ -166,16 +173,30 @@ export default function BillsListScreen({ navigation }: any) {
         </TouchableOpacity>
       </View>
 
-      {bills.length === 0 ? (
+      <View style={styles.filterBar}>
+        {(['all', 'unpaid', 'paid'] as const).map((f) => (
+          <TouchableOpacity
+            key={f}
+            style={[styles.filterTab, filter === f && styles.filterTabActive]}
+            onPress={() => setFilter(f)}
+          >
+            <Text style={[styles.filterTabText, filter === f && styles.filterTabTextActive]}>
+              {f.charAt(0).toUpperCase() + f.slice(1)}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {filteredBills.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyTitle}>No bills yet</Text>
+          <Text style={styles.emptyTitle}>{bills.length === 0 ? 'No bills yet' : `No ${filter} bills`}</Text>
           <Text style={styles.emptySubtitle}>
-            Tap the + button to add your first bill
+            {bills.length === 0 ? 'Tap the + button to add your first bill' : ''}
           </Text>
         </View>
       ) : (
         <FlatList
-          data={bills}
+          data={filteredBills}
           renderItem={renderBillItem}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContent}
@@ -226,6 +247,32 @@ const styles = StyleSheet.create({
   signOutButton: {
     color: '#007AFF',
     fontSize: 16,
+  },
+  filterBar: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+    gap: 8,
+  },
+  filterTab: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 16,
+    backgroundColor: '#f0f0f0',
+  },
+  filterTabActive: {
+    backgroundColor: '#007AFF',
+  },
+  filterTabText: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
+  },
+  filterTabTextActive: {
+    color: '#fff',
   },
   listContent: {
     padding: 16,
