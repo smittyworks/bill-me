@@ -6,16 +6,20 @@ import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, CheckCircle, Clock } from "lucide-react";
 import Link from "next/link";
 
+function parseLocalDate(dateStr: string): Date {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
 function daysUntilDue(dueDateStr: string): number {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const due = new Date(dueDateStr);
-  due.setHours(0, 0, 0, 0);
+  const due = parseLocalDate(dueDateStr);
   return Math.round((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 }
 
 function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("en-US", {
+  return parseLocalDate(dateStr).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",

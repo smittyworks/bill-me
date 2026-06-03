@@ -23,8 +23,13 @@ import { ArrowLeft, Pencil, Trash2, CheckCircle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
+function parseLocalDate(dateStr: string): Date {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
 function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', {
+  return parseLocalDate(dateStr).toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
@@ -35,8 +40,7 @@ function formatDate(dateStr: string): string {
 function daysUntilDue(dueDateStr: string): number {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const due = new Date(dueDateStr);
-  due.setHours(0, 0, 0, 0);
+  const due = parseLocalDate(dueDateStr);
   return Math.round((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 }
 
@@ -51,7 +55,7 @@ export function BillDetail({ bill: initialBill }: { bill: Bill }) {
   const [description, setDescription] = useState(bill.description ?? '');
   const [balance, setBalance] = useState(String(bill.balance));
   const [minimumDue, setMinimumDue] = useState(String(bill.minimum_due));
-  const [dueDate, setDueDate] = useState(new Date(bill.due_date).toISOString().split('T')[0]);
+  const [dueDate, setDueDate] = useState(bill.due_date.split('T')[0]);
 
   const isPaid = bill.status === 'paid';
   const days = daysUntilDue(bill.due_date);
