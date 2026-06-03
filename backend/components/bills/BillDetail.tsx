@@ -23,13 +23,22 @@ import { ArrowLeft, Pencil, Trash2, CheckCircle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
-function parseLocalDate(dateStr: string): Date {
-  const [y, m, d] = dateStr.split('-').map(Number);
+function parseLocalDate(dateVal: string | Date): Date {
+  if (dateVal instanceof Date) {
+    // Neon returns DATE columns as UTC-midnight Date objects; use UTC accessors
+    return new Date(dateVal.getUTCFullYear(), dateVal.getUTCMonth(), dateVal.getUTCDate());
+  }
+  const [y, m, d] = dateVal.split('-').map(Number);
   return new Date(y, m - 1, d);
 }
 
-function formatDate(dateStr: string): string {
-  return parseLocalDate(dateStr).toLocaleDateString('en-US', {
+function toDateInputValue(dateVal: string | Date): string {
+  const d = parseLocalDate(dateVal);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function formatDate(dateVal: string | Date): string {
+  return parseLocalDate(dateVal).toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
@@ -37,10 +46,10 @@ function formatDate(dateStr: string): string {
   });
 }
 
-function daysUntilDue(dueDateStr: string): number {
+function daysUntilDue(dueDateVal: string | Date): number {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const due = parseLocalDate(dueDateStr);
+  const due = parseLocalDate(dueDateVal);
   return Math.round((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 }
 
@@ -55,7 +64,7 @@ export function BillDetail({ bill: initialBill }: { bill: Bill }) {
   const [description, setDescription] = useState(bill.description ?? '');
   const [balance, setBalance] = useState(String(bill.balance));
   const [minimumDue, setMinimumDue] = useState(String(bill.minimum_due));
-  const [dueDate, setDueDate] = useState(bill.due_date.split('T')[0]);
+  const [dueDate, setDueDate] = useState(toDateInputValue(bill.due_date as string | Date));
 
   const isPaid = bill.status === 'paid';
   const days = daysUntilDue(bill.due_date);

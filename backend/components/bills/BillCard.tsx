@@ -6,19 +6,23 @@ import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, CheckCircle, Clock } from "lucide-react";
 import Link from "next/link";
 
-function parseLocalDate(dateStr: string): Date {
-  const [y, m, d] = dateStr.split('-').map(Number);
+function parseLocalDate(dateVal: string | Date): Date {
+  if (dateVal instanceof Date) {
+    // Neon returns DATE columns as UTC-midnight Date objects; use UTC accessors
+    return new Date(dateVal.getUTCFullYear(), dateVal.getUTCMonth(), dateVal.getUTCDate());
+  }
+  const [y, m, d] = dateVal.split('-').map(Number);
   return new Date(y, m - 1, d);
 }
 
-function daysUntilDue(dueDateStr: string): number {
+function daysUntilDue(dueDateStr: string | Date): number {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const due = parseLocalDate(dueDateStr);
   return Math.round((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-function formatDate(dateStr: string): string {
+function formatDate(dateStr: string | Date): string {
   return parseLocalDate(dateStr).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -27,7 +31,7 @@ function formatDate(dateStr: string): string {
 }
 
 export function BillCard({ bill }: { bill: Bill }) {
-  const days = daysUntilDue(bill.due_date);
+  const days = daysUntilDue(bill.due_date as string | Date);
   const isPaid = bill.status === "paid";
   const isOverdue = !isPaid && days < 0;
   const isUrgent = !isPaid && days >= 0 && days <= 5;
@@ -44,10 +48,10 @@ export function BillCard({ bill }: { bill: Bill }) {
           {/* Full-width date + days left */}
           <p className={`text-sm ${isOverdue && !isPaid ? "text-destructive" : isUrgent ? "text-yellow-600 dark:text-yellow-400" : "text-muted-foreground"}`}>
             {isPaid
-              ? `Due ${formatDate(bill.due_date)}`
+              ? `Due ${formatDate(bill.due_date as string | Date)}`
               : days === 0
                 ? "Due today"
-                : `Due ${formatDate(bill.due_date)} (${isOverdue ? `${Math.abs(days)} day${Math.abs(days) !== 1 ? "s" : ""} overdue` : `${days} day${days !== 1 ? "s" : ""}`})`}
+                : `Due ${formatDate(bill.due_date as string | Date)} (${isOverdue ? `${Math.abs(days)} day${Math.abs(days) !== 1 ? "s" : ""} overdue` : `${days} day${days !== 1 ? "s" : ""}`})`}
           </p>
 
           {/* Bottom row: icon + amount + badge */}
