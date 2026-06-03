@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TimeBlock } from '@shared/types';
 import { formatTime, timeToMinutes } from '@/lib/time';
 import { TimeBlockCard } from './TimeBlockCard';
@@ -15,8 +15,21 @@ interface Props {
   onSelectSlot: (time: string) => void;
 }
 
+function getNowMinutes(): number | null {
+  if (typeof window === 'undefined') return null;
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
+
 export function TimelineGrid({ blocks, onSelectBlock, onSelectSlot }: Props) {
   const nowRef = useRef<HTMLDivElement>(null);
+  const [nowMinutes, setNowMinutes] = useState<number | null>(null);
+
+  useEffect(() => {
+    setNowMinutes(getNowMinutes());
+    const interval = setInterval(() => setNowMinutes(getNowMinutes()), 60_000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Auto-scroll to current time on mount
   useEffect(() => {
@@ -30,10 +43,8 @@ export function TimelineGrid({ blocks, onSelectBlock, onSelectSlot }: Props) {
     return ((minutes - gridStartMinutes) / 30) * SLOT_HEIGHT_PX;
   }
 
-  const now = new Date();
-  const nowMinutes = now.getHours() * 60 + now.getMinutes();
-  const nowTop = minutesToTop(nowMinutes);
-  const isNowVisible = nowMinutes >= gridStartMinutes && nowMinutes <= GRID_END_HOUR * 60;
+  const nowTop = nowMinutes !== null ? minutesToTop(nowMinutes) : null;
+  const isNowVisible = nowMinutes !== null && nowMinutes >= gridStartMinutes && nowMinutes <= GRID_END_HOUR * 60;
 
   const hours = Array.from(
     { length: GRID_END_HOUR - GRID_START_HOUR + 1 },
@@ -82,7 +93,7 @@ export function TimelineGrid({ blocks, onSelectBlock, onSelectSlot }: Props) {
         })}
 
         {/* Current time indicator */}
-        {isNowVisible && (
+        {isNowVisible && nowTop !== null && (
           <div
             ref={nowRef}
             className="absolute left-16 right-0 flex items-center pointer-events-none z-10"
